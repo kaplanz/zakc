@@ -374,15 +374,16 @@ bool hashmap_reserve(struct hashmap *map, usize capacity) {
 
     // Rehash all existing items into the new array of linked lists
     for (usize i = 0; i < map->capacity; i++) {
-        struct item *item = map->items[i];
+        struct item *tmp, *item = map->items[i];
         while (item != NULL) {
             // Compute the new hash value for the item
             u64 hash = map->hash(item->key) % capacity;
             // Insert the item into the new array of linked lists
+            tmp = item->next;
             item->next = items[hash];
             items[hash] = item;
             // Move to the next item in the old array of linked lists
-            item = item->next;
+            item = tmp;
         }
     }
 
